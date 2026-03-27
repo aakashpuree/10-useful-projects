@@ -1,7 +1,7 @@
 ﻿# Habitta – Personal Progress Tracker
 
 ## Use own self : https://aakashpuri786.github.io/Habitta-app/ 
-## Or: 
+## Or: https://htmlpreview.github.io/?https://github.com/Aakashpuri786/10-useful-projects/blob/main/Habitta-app/index.html
 // go to this website and do the task here and complete the task for own development 
 ## Folder Structure
 - `index.html`
