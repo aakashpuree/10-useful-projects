@@ -1,0 +1,324 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habitta – Personal Progress Tracker</title>
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#0B1320" />
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Habitta</h1>
+    <p id="todayLabel">Your 30-day transformation, organized in one place.</p>
+  </header>
+
+  <main>
+    <section id="dashboard" class="section active">
+      <div class="card">
+        <h2>Dashboard</h2>
+        <p>Snapshot of your momentum and daily outcomes.</p>
+        <div class="grid two" style="margin-top: 12px;">
+          <div class="stat">
+            <span>Completion Rate</span>
+            <strong id="completionRate">0%</strong>
+          </div>
+          <div class="stat">
+            <span>Daily Streak</span>
+            <strong id="dailyStreak">0 days</strong>
+          </div>
+          <div class="stat">
+            <span>Active Routines</span>
+            <strong id="activeRoutines">0</strong>
+          </div>
+          <div class="stat">
+            <span>Projects In Motion</span>
+            <strong id="activeProjects">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Task Completion</h3>
+        <canvas id="completionChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Daily Productivity</h3>
+        <canvas id="productivityChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Progress Trend</h3>
+        <canvas id="progressChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Weekly & Monthly Overview</h3>
+        <div class="grid two" id="overviewStats"></div>
+      </div>
+    </section>
+
+    <section id="routine" class="section">
+      <div class="card">
+        <h2>Daily Routine Tracker</h2>
+        <p>Build habits and check them off daily.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <input id="routineInput" placeholder="Add a routine (e.g., Study, Workout)" />
+          <button class="btn" id="addRoutineBtn">Add Routine</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Today&apos;s Routines</h3>
+        <div id="routineList" class="list"></div>
+      </div>
+      <div class="card">
+        <h3>Routine Progress</h3>
+        <canvas id="routineChart"></canvas>
+        <p class="small" id="monthlyRoutineRate">Monthly completion: 0%</p>
+      </div>
+    </section>
+
+    <section id="challenges" class="section">
+      <div class="card">
+        <h2>Challenges</h2>
+        <p>Push yourself with focused challenge tracks.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <input id="challengeTitle" placeholder="Challenge title" />
+          <select id="challengeCategory">
+            <option>Study</option>
+            <option>Work</option>
+            <option>Skill Development</option>
+            <option>Personal Growth</option>
+          </select>
+          <button class="btn" id="addChallengeBtn">Add Challenge</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Active Challenges</h3>
+        <div id="challengeList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="thirty" class="section">
+      <div class="card">
+        <h2>30 Day Self Improvement Challenge</h2>
+        <p>Daily tasks designed to transform confidence, focus, and presence.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <button class="btn" id="startThirtyBtn">Start / Reset 30-Day Plan</button>
+          <p class="small" id="thirtyStatus">Not started yet.</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Day-by-Day Plan</h3>
+        <div id="thirtyList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="card">
+        <h2>Project Creation Goal</h2>
+        <p>Track two real-life projects with startup potential.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <input id="projectName" placeholder="Project name" />
+          <input id="projectProgress" type="number" min="0" max="100" placeholder="Progress %" />
+          <textarea id="projectTask" placeholder="Add a task for this project"></textarea>
+          <button class="btn" id="addProjectBtn">Add Project</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Projects</h3>
+        <div id="projectList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="startup" class="section">
+      <div class="card">
+        <h2>Startup Builder</h2>
+        <p>Plan a 30-day micro-startup and track milestones.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <input id="startupIdea" placeholder="Startup idea" />
+          <textarea id="startupTask" placeholder="Add a daily task"></textarea>
+          <input id="startupMilestone" placeholder="Add a milestone" />
+          <button class="btn" id="addStartupBtn">Update Startup Plan</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Startup Plan</h3>
+        <div id="startupList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="skills" class="section">
+      <div class="card">
+        <h2>Skill Builder</h2>
+        <p>Grow new skills with consistent practice.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <input id="skillName" placeholder="Skill name (e.g., Coding)" />
+          <textarea id="skillTask" placeholder="Add a practice task"></textarea>
+          <button class="btn" id="addSkillBtn">Add Skill</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Starter Skills</h3>
+        <p class="small">Tap to add these as separate skill cards.</p>
+        <div class="actions" id="starterSkillList"></div>
+        <div class="actions" style="margin-top: 10px;">
+          <button class="btn secondary" id="addAllStarterSkills">Add All Starter Skills</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Skills</h3>
+        <div id="skillList" class="list"></div>
+      </div>
+      <div class="card">
+        <h3>30-Day Skill Mastery Plan</h3>
+        <p class="small" id="skillPlanStatus">Not started yet.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <button class="btn" id="startSkillPlanBtn">Start / Reset Skill Plan</button>
+        </div>
+        <div id="skillPlanList" class="list" style="margin-top: 12px;"></div>
+      </div>
+    </section>
+
+    <section id="fitness" class="section">
+      <div class="card">
+        <h2>Fitness Tracker</h2>
+        <p>Track daily movement and workouts.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <input id="fitnessInput" placeholder="Add a fitness habit" />
+          <button class="btn" id="addFitnessBtn">Add Fitness Habit</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Today&apos;s Fitness</h3>
+        <div id="fitnessList" class="list"></div>
+      </div>
+      <div class="card">
+        <h3>30-Day Fitness Challenge</h3>
+        <p class="small" id="fitnessPlanStatus">Not started yet.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <button class="btn" id="startFitnessPlanBtn">Start / Reset Fitness Plan</button>
+        </div>
+        <details style="margin-top: 12px;">
+          <summary class="small">View all 30 days</summary>
+          <div id="fitnessPlanList" class="list" style="margin-top: 10px;"></div>
+        </details>
+      </div>
+      <div class="card">
+        <h3>Fitness Progress</h3>
+        <canvas id="fitnessChart"></canvas>
+      </div>
+    </section>
+
+    <section id="planner" class="section">
+      <div class="card">
+        <h2>Daily Planner</h2>
+        <p>Plan your day based on limited time and resources.</p>
+        <div class="grid" style="margin-top: 12px;">
+          <input id="planTime" placeholder="Time block (e.g., 7:00 AM - 8:00 AM)" />
+          <input id="planTask" placeholder="Task" />
+          <input id="planDuration" placeholder="Duration (e.g., 60 min)" />
+          <button class="btn" id="addPlanBtn">Add Plan</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Today&apos;s Plan</h3>
+        <div id="planList" class="list"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav">
+    <button data-target="dashboard" class="active">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="3" width="8" height="8" rx="2" />
+          <rect x="13" y="3" width="8" height="8" rx="2" />
+          <rect x="3" y="13" width="8" height="8" rx="2" />
+          <rect x="13" y="13" width="8" height="8" rx="2" />
+        </svg>
+      </span>
+      Dashboard
+    </button>
+    <button data-target="routine">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M8 12l2.5 2.5L16 9" />
+        </svg>
+      </span>
+      Routine
+    </button>
+    <button data-target="challenges">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M13 2L4 14h6l-1 8 9-12h-6z" />
+        </svg>
+      </span>
+      Challenges
+    </button>
+    <button data-target="thirty">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="16" rx="2" />
+          <path d="M8 3v4M16 3v4M3 9h18" />
+        </svg>
+      </span>
+      30 Day
+    </button>
+    <button data-target="projects">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="7" width="18" height="12" rx="2" />
+          <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 12h18" />
+        </svg>
+      </span>
+      Projects
+    </button>
+    <button data-target="startup">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2c4 2 6 6 6 10-4 2-8 2-12 0 0-4 2-8 6-10z" />
+          <path d="M9 12l-3 3M15 12l3 3M12 14v6" />
+        </svg>
+      </span>
+      Startup
+    </button>
+    <button data-target="skills">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 4h10a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4z" />
+          <path d="M7 4v16" />
+        </svg>
+      </span>
+      Skills
+    </button>
+    <button data-target="fitness">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10v4M20 10v4M7 9v6M17 9v6M7 12h10" />
+        </svg>
+      </span>
+      Fitness
+    </button>
+    <button data-target="planner">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v6l4 2" />
+        </svg>
+      </span>
+      Planner
+    </button>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>

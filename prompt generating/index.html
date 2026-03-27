@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crash Course Prompt Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Generate high-efficiency crash course strategies for your exams instantly.">
+</head>
+<body>
+    <header class="header">
+        <div class="header-pill">Prompt Generator</div>
+        <h1>Ace Your Exams.</h1>
+        <p>Instantly generate the perfect AI prompt for last-minute crash courses.</p>
+    </header>
+
+    <main class="container">
+        <!-- Input section -->
+        <section class="panel input-panel">
+            <h2>Exam Details</h2>
+            <p class="panel-desc">Fill in your syllabus to generate a customized strategy prompt.</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modelName">AI Model Name</label>
+                    <select id="modelName">
+                        <option value="GPT">ChatGPT (GPT)</option>
+                        <option value="Claude">Claude</option>
+                        <option value="Gemini">Gemini</option>
+                        <option value="DeepSeek">DeepSeek</option>
+                        <option value="AI">General AI</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="className">Class / Grade</label>
+                    <select id="className">
+                        <option value="">Not specified</option>
+                        <option value="Class 9">Class 9</option>
+                        <option value="Class 10">Class 10</option>
+                        <option value="Class 11">Class 11</option>
+                        <option value="Class 12">Class 12</option>
+                        <option value="College">College / University</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" placeholder="e.g. Physics, Data Structures">
+                </div>
+                
+                <div class="form-group">
+                    <label for="timeLeft">Time Left</label>
+                    <input type="text" id="timeLeft" placeholder="e.g. 4 hours">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="chapters">Chapters</label>
+                <textarea id="chapters" rows="3" placeholder="e.g. 1. Kinematics, 2. Dynamics"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="topics">Important Topics (Optional)</label>
+                <textarea id="topics" rows="3" placeholder="e.g. Newton's laws, Conservation of energy"></textarea>
+            </div>
+        </section>
+
+        <!-- Output section -->
+        <section class="panel output-panel">
+            <div class="output-header">
+                <h2>Generated Prompt</h2>
+                <div class="pulse-indicator">
+                    <span class="dot"></span>
+                    <span class="label">Real-time</span>
+                </div>
+            </div>
+            
+            <div class="output-container">
+                <pre><code id="promptOutput"></code></pre>
+            </div>
+            
+            <button id="copyBtn" class="copy-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy Prompt
+            </button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Made by the intern</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

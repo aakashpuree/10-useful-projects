@@ -1,0 +1,12 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Habitta">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#18C08B"/>
+      <stop offset="100%" stop-color="#0B5FA5"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#0B1320"/>
+  <circle cx="256" cy="256" r="190" fill="url(#g)" opacity="0.18"/>
+  <path d="M160 330c0-88 58-148 140-148 40 0 74 14 100 38l-30 34c-18-16-40-24-70-24-52 0-84 36-84 94 0 56 30 92 80 92 36 0 66-14 90-38l30 34c-30 32-72 52-126 52-86 0-130-60-130-134z" fill="#E6FFF6"/>
+  <path d="M120 366h272" stroke="#E6FFF6" stroke-width="16" stroke-linecap="round" opacity="0.6"/>
+</svg>

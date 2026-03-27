@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>South Indian Temple Architecture - 3D Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+        }
+        
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: 2px solid #ffd700;
+            pointer-events: none;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        p {
+            font-size: 0.9rem;
+            color: #fff;
+            opacity: 0.9;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffd700;
+            font-size: 1.5rem;
+            z-index: 200;
+            transition: opacity 0.5s;
+        }
+        
+        .controls-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Constructing Temple...</div>
+    <div id="canvas-container">
+        <div id="info">
+            <h1>Dravidian Temple</h1>
+            <p>Traditional South Indian Architecture</p>
+        </div>
+        <div class="controls-hint">
+            Left Click: Rotate • Right Click: Pan • Scroll: Zoom
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0f0f1e);
+        scene.fog = new THREE.FogExp2(0x0f0f1e, 0.008);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(40, 30, 50);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2 - 0.05;
+        controls.minDistance = 20;
+        controls.maxDistance = 150;
+        controls.target.set(0, 10, 0);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffd4a3, 0.4);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffaa33, 1.2);
+        sunLight.position.set(50, 80, 30);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        sunLight.shadow.camera.near = 0.5;
+        sunLight.shadow.camera.far = 200;
+        sunLight.shadow.camera.left = -60;
+        sunLight.shadow.camera.right = 60;
+        sunLight.shadow.camera.top = 60;
+        sunLight.shadow.camera.bottom = -60;
+        scene.add(sunLight);
+
+        // Materials
+        const stoneMaterial = new THREE.MeshStandardMaterial({
+            color: 0xD4A373,
+            roughness: 0.9,
+            metalness: 0.1,
+            flatShading: false
+        });
+
+        const darkStoneMaterial = new THREE.MeshStandardMaterial({
+            color: 0x8B7355,
+            roughness: 0.9,
+            metalness: 0.1
+        });
+
+        const goldMaterial = new THREE.MeshStandardMaterial({
+            color: 0xFFD700,
+            roughness: 0.3,
+            metalness: 0.8,
+            emissive: 0xFFD700,
+            emissiveIntensity: 0.2
+        });
+
+        const woodMaterial = new THREE.MeshStandardMaterial({
+            color: 0x4A3728,
+            roughness: 0.8,
+            metalness: 0.0
+        });
+
+        // Temple Group
+        const templeGroup = new THREE.Group();
+        scene.add(templeGroup);
+
+        // Ground
+        const groundGeometry = new THREE.PlaneGeometry(200, 200);
+        const groundMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x2a2a3a,
+            roughness: 1,
+            metalness: 0
+        });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Base Platform (Jagati)
+        const baseGeometry = new THREE.BoxGeometry(60, 4, 80);
+        const base = new THREE.Mesh(baseGeometry, stoneMaterial);
+        base.position.y = 2;
+        base.castShadow = true;
+        base.receiveShadow = true;
+        templeGroup.add(base);
+
+        // Stairs
+        const stairsGroup = new THREE.Group();
+        for(let i = 0; i < 5; i++) {
+            const stepGeometry = new THREE.BoxGeometry(20, 0.8, 2);
+            const step = new THREE.Mesh(stepGeometry, stoneMaterial);
+            step.position.set(0, i * 0.4, 40 + i * 1);
+            step.castShadow = true;
+            step.receiveShadow = true;
+            stairsGroup.add(step);
+        }
+        templeGroup.add(stairsGroup);
+
+        // Main Sanctum (Garbhagriha)
+        const sanctumGeometry = new THREE.BoxGeometry(20, 25, 20);
+        const sanctum = new THREE.Mesh(sanctumGeometry, stoneMaterial);
+        sanctum.position.set(0, 14.5, -10);
+        sanctum.castShadow = true;
+        sanctum.receiveShadow = true;
+        templeGroup.add(sanctum);
+
+        // Inner Sanctum (Vimana Base)
+        const innerSanctumGeometry = new THREE.BoxGeometry(14, 20, 14);
+        const innerSanctum = new THREE.Mesh(innerSanctumGeometry, darkStoneMaterial);
+        innerSanctum.position.set(0, 17, -10);
+        innerSanctum.castShadow = true;
+        templeGroup.add(innerSanctum);
+
+        // Vimana (Tower) - Stepped Pyramid
+        function createSteppedTower(x, y, z, width, height, depth, tiers) {
+            const towerGroup = new THREE.Group();
+            let currentWidth = width;
+            let currentDepth = depth;
+            let currentY = y;
+            const tierHeight = height / tiers;
+
+            for(let i = 0; i < tiers; i++) {
+                const tierGeometry = new THREE.BoxGeometry(currentWidth, tierHeight, currentDepth);
+                const tier = new THREE.Mesh(tierGeometry, stoneMaterial);
+                tier.position.y = currentY + tierHeight / 2;
+                tier.castShadow = true;
+                tier.receiveShadow = true;
+                
+                // Add decorative cornice
+                const corniceGeometry = new THREE.BoxGeometry(currentWidth + 1, 0.5, currentDepth + 1);
+                const cornice = new THREE.Mesh(corniceGeometry, darkStoneMaterial);
+                cornice.position.y = currentY + tierHeight;
+                cornice.castShadow = true;
+                
+                towerGroup.add(tier);
+                towerGroup.add(cornice);
+                
+                currentWidth *= 0.85;
+                currentDepth *= 0.85;
+                currentY += tierHeight;
+            }
+            
+            // Kalasa (Pot on top)
+            const kalasaGeometry = new THREE.SphereGeometry(1.5, 16, 16);
+            const kalasa = new THREE.Mesh(kalasaGeometry, goldMaterial);
+            kalasa.position.set(0, currentY + 1, 0);
+            kalasa.castShadow = true;
+            towerGroup.add(kalasa);
+            
+            // Spire
+            const spireGeometry = new THREE.ConeGeometry(0.5, 4, 8);
+            const spire = new THREE.Mesh(spireGeometry, goldMaterial);
+            spire.position.set(0, currentY + 3, 0);
+            spire.castShadow = true;
+            towerGroup.add(spire);
+            
+            towerGroup.position.set(x, 0, z);
+            return towerGroup;
+        }
+
+        const vimana = createSteppedTower(0, 27, -10, 12, 35, 12, 8);
+        templeGroup.add(vimana);
+
+        // Gopuram (Entrance Tower)
+        const gopuramGroup = new THREE.Group();
+        gopuramGroup.position.set(0, 4, 35);
+        
+        // Gopuram base
+        const gopuramBaseGeometry = new THREE.BoxGeometry(24, 30, 12);
+        const gopuramBase = new THREE.Mesh(gopuramBaseGeometry, stoneMaterial);
+        gopuramBase.position.y = 15;
+        gopuramBase.castShadow = true;
+        gopuramBase.receiveShadow = true;
+        gopuramGroup.add(gopuramBase);
+
+        // Gopuram tiers
+        const gopuramTiers = createSteppedTower(0, 30, 0, 22, 40, 10, 7);
+        gopuramGroup.add(gopuramTiers);
+
+        // Archway
+        const archGeometry = new THREE.TorusGeometry(6, 1.5, 8, 20, Math.PI);
+        const arch = new THREE.Mesh(archGeometry, darkStoneMaterial);
+        arch.position.set(0, 10, 6.1);
+        arch.scale.set(1, 1.5, 1);
+        gopuramGroup.add(arch);
+
+        templeGroup.add(gopuramGroup);
+
+        // Mandapa (Pillared Hall)
+        const mandapaGroup = new THREE.Group();
+        mandapaGroup.position.set(0, 4, 12);
+
+        // Mandapa Roof
+        const roofGeometry = new THREE.ConeGeometry(14, 8, 4);
+        const roof = new THREE.Mesh(roofGeometry, stoneMaterial);
+        roof.position.y = 14;
+        roof.rotation.y = Math.PI / 4;
+        roof.castShadow = true;
+        mandapaGroup.add(roof);
+
+        // Pillars
+        function createPillar(x, z) {
+            const pillarGroup = new THREE.Group();
+            
+            // Base
+            const baseGeo = new THREE.BoxGeometry(2, 1, 2);
+            const base = new THREE.Mesh(baseGeo, darkStoneMaterial);
+            base.position.y = 0.5;
+            pillarGroup.add(base);
+            
+            // Shaft
+            const shaftGeo = new THREE.CylinderGeometry(0.8, 1, 12, 8);
+            const shaft = new THREE.Mesh(shaftGeo, stoneMaterial);
+            shaft.position.y = 6.5;
+            shaft.castShadow = true;
+            pillarGroup.add(shaft);
+            
+            // Capital
+            const capitalGeo = new THREE.BoxGeometry(2, 1, 2);
+            const capital = new THREE.Mesh(capitalGeo, darkStoneMaterial);
+            capital.position.y = 13;
+            pillarGroup.add(capital);
+            
+            pillarGroup.position.set(x, 0, z);
+            return pillarGroup;
+        }
+
+        // Create pillared hall
+        const pillarPositions = [
+            [-8, -8], [0, -8], [8, -8],
+            [-8, 0], [8, 0],
+            [-8, 8], [0, 8], [8, 8]
+        ];
+
+        pillarPositions.forEach(pos => {
+            mandapaGroup.add(createPillar(pos[0], pos[1]));
+        });
+
+        templeGroup.add(mandapaGroup);
+
+        // Prakara (Compound Wall)
+        function createWallSegment(x, z, width, rotation) {
+            const wallGeometry = new THREE.BoxGeometry(width, 12, 2);
+            const wall = new THREE.Mesh(wallGeometry, stoneMaterial);
+            wall.position.set(x, 6, z);
+            wall.rotation.y = rotation;
+            wall.castShadow = true;
+            wall.receiveShadow = true;
+            return wall;
+        }
+
+        // Surrounding walls
+        templeGroup.add(createWallSegment(0, -40, 56, 0));
+        templeGroup.add(createWallSegment(0, 40, 56, 0));
+        templeGroup.add(createWallSegment(-28, 0, 80, Math.PI / 2));
+        templeGroup.add(createWallSegment(28, 0, 80, Math.PI / 2));
+
+        // Corner towers (Gopuram style but smaller)
+        const corners = [[-25, -35], [25, -35], [-25, 35], [25, 35]];
+        corners.forEach(pos => {
+            const cornerTower = createSteppedTower(pos[0], 4, pos[1], 6, 15, 6, 4);
+            templeGroup.add(cornerTower);
+        });
+
+        // Nandi (Bull) Statue - Simplified
+        const nandiGroup = new THREE.Group();
+        nandiGroup.position.set(0, 4, 25);
+        
+        const nandiBody = new THREE.Mesh(
+            new THREE.BoxGeometry(4, 3, 6),
+            darkStoneMaterial
+        );
+        nandiBody.position.y = 2;
+        nandiBody.castShadow = true;
+        nandiGroup.add(nandiBody);
+        
+        const nandiHead = new THREE.Mesh(
+            new THREE.BoxGeometry(3, 3, 3),
+            darkStoneMaterial
+        );
+        nandiHead.position.set(0, 3.5, 3.5);
+        nandiHead.castShadow = true;
+        nandiGroup.add(nandiHead);
+        
+        // Horns
+        const hornGeo = new THREE.ConeGeometry(0.3, 1.5, 8);
+        const horn1 = new THREE.Mesh(hornGeo, goldMaterial);
+        horn1.position.set(-1, 5, 3.5);
+        horn1.rotation.z = 0.5;
+        nandiGroup.add(horn1);
+        
+        const horn2 = new THREE.Mesh(hornGeo, goldMaterial);
+        horn2.position.set(1, 5, 3.5);
+        horn2.rotation.z = -0.5;
+        nandiGroup.add(horn2);
+        
+        templeGroup.add(nandiGroup);
+
+        // Flagstaff (Dhvajastambha)
+        const flagstaffGeo = new THREE.CylinderGeometry(0.3, 0.5, 18, 8);
+        const flagstaff = new THREE.Mesh(flagstaffGeo, goldMaterial);
+        flagstaff.position.set(0, 13, 32);
+        flagstaff.castShadow = true;
+        templeGroup.add(flagstaff);
+
+        // Flag
+        const flagGeo = new THREE.PlaneGeometry(4, 3);
+        const flagMat = new THREE.MeshStandardMaterial({ 
+            color: 0xff0000, 
+            side: THREE.DoubleSide,
+            emissive: 0x330000
+        });
+        const flag = new THREE.Mesh(flagGeo, flagMat);
+        flag.position.set(2, 20, 32);
+        templeGroup.add(flag);
+
+        // Lamps (Oil Lamps around temple)
+        const lamps = [];
+        function createLamp(x, z) {
+            const lampGroup = new THREE.Group();
+            lampGroup.position.set(x, 4, z);
+            
+            // Lamp base
+            const base = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.5, 0.8, 1.5, 8),
+                darkStoneMaterial
+            );
+            base.position.y = 0.75;
+            lampGroup.add(base);
+            
+            // Flame light
+            const light = new THREE.PointLight(0xff6600, 2, 15);
+            light.position.y = 2;
+            lampGroup.add(light);
+            
+            // Flame mesh
+            const flame = new THREE.Mesh(
+                new THREE.SphereGeometry(0.3, 8, 8),
+                new THREE.MeshBasicMaterial({ color: 0xffaa00 })
+            );
+            flame.position.y = 2;
+            lampGroup.add(flame);
+            
+            lamps.push({ light, flame, baseOffset: Math.random() * Math.PI * 2 });
+            return lampGroup;
+        }
+
+        // Add lamps along the path
+        for(let i = -20; i <= 20; i += 10) {
+            templeGroup.add(createLamp(i, 38));
+            templeGroup.add(createLamp(i, -30));
+        }
+
+        // Trees (Simple representation)
+        function createTree(x, z) {
+            const treeGroup = new THREE.Group();
+            treeGroup.position.set(x, 0, z);
+            
+            // Trunk
+            const trunk = new THREE.Mesh(
+                new THREE.CylinderGeometry(1, 1.5, 8, 6),
+                woodMaterial
+            );
+            trunk.position.y = 4;
+            trunk.castShadow = true;
+            treeGroup.add(trunk);
+            
+            // Leaves
+            const leaves = new THREE.Mesh(
+                new THREE.ConeGeometry(6, 12, 8),
+                new THREE.MeshStandardMaterial({ color: 0x2d5016, roughness: 0.8 })
+            );
+            leaves.position.y = 10;
+            leaves.castShadow = true;
+            treeGroup.add(leaves);
+            
+            return treeGroup;
+        }
+
+        // Add surrounding trees
+        const treePositions = [
+            [-40, -40], [-50, 0], [-40, 40],
+            [40, -40], [50, 0], [40, 40],
+            [-30, 50], [30, 50], [-30, -50], [30, -50]
+        ];
+        treePositions.forEach(pos => {
+            scene.add(createTree(pos[0], pos[1]));
+        });
+
+        // Particle system for divine atmosphere
+        const particleCount = 200;
+        const particleGeometry = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        const particleVelocities = [];
+
+        for(let i = 0; i < particleCount; i++) {
+            particlePositions[i * 3] = (Math.random() - 0.5) * 100;
+            particlePositions[i * 3 + 1] = Math.random() * 50;
+            particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 100;
+            particleVelocities.push({
+                y: Math.random() * 0.02 + 0.01,
+                x: (Math.random() - 0.5) * 0.02,
+                z: (Math.random() - 0.5) * 0.02
+            });
+        }
+
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particleMaterial = new THREE.PointsMaterial({
+            color: 0xffd700,
+            size: 0.5,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
+
+        // Animation variables
+        let time = 0;
+        const clock = new THREE.Clock();
+
+        // Hide loading
+        document.getElementById('loading').style.opacity = 0;
+        setTimeout(() => document.getElementById('loading').remove(), 500);
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            time += delta;
+            
+            controls.update();
+            
+            // Animate lamps (flickering)
+            lamps.forEach((lamp, index) => {
+                const flicker = Math.sin(time * 10 + lamp.baseOffset) * 0.3 + 0.7;
+                lamp.light.intensity = 1.5 + flicker * 0.5;
+                lamp.flame.scale.setScalar(0.8 + flicker * 0.2);
+            });
+            
+            // Animate flag
+            flag.rotation.y = Math.sin(time * 2) * 0.1;
+            flag.position.x = 2 + Math.sin(time * 3) * 0.2;
+            
+            // Animate particles
+            const positions = particles.geometry.attributes.position.array;
+            for(let i = 0; i < particleCount; i++) {
+                positions[i * 3 + 1] += particleVelocities[i].y;
+                positions[i * 3] += Math.sin(time + i) * 0.02;
+                
+                if(positions[i * 3 + 1] > 60) {
+                    positions[i * 3 + 1] = 0;
+                }
+            }
+            particles.geometry.attributes.position.needsUpdate = true;
+            
+            // Slow rotation of temple group for showcase
+            templeGroup.rotation.y = Math.sin(time * 0.1) * 0.05;
+            
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Initial camera animation
+        let introProgress = 0;
+        function introAnimation() {
+            if(introProgress < 1) {
+                introProgress += 0.01;
+                const ease = 1 - Math.pow(1 - introProgress, 3);
+                camera.position.lerp(new THREE.Vector3(30, 20, 40), 0.03);
+                camera.lookAt(0, 10, 0);
+                requestAnimationFrame(introAnimation);
+            }
+        }
+        introAnimation();
+
+        animate();
+    </script>
+</body>
+</html>
