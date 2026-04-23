@@ -5,7 +5,7 @@ Welcome to the **AI Crash Course Prompt Generator**! 🎓✨
 This sleek, Apple-inspired web application is designed to help students and lifelong learners instantly generate structured, high-efficiency study prompts for any AI model (like ChatGPT, Claude, or Gemini). 
 
 Stop wrestling with prompt engineering and start studying smarter!
-## Access website : https://htmlpreview.github.io/?https://github.com/Aakashpuri786/10-useful-projects/blob/main/prompt%20generating/index.html
+## Access website : https://htmlpreview.github.io/?https://github.com/Aakashpuree/10-useful-projects/blob/main/prompt%20generating/index.html
 
 ## ✨ Features
 
